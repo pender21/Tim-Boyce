@@ -86,7 +86,7 @@ html,body{margin:0;padding:0;}
 body{
   font-family:'Jost', sans-serif;
   color:var(--ink);
-  background:var(--cream);
+  background:var(--sage);
   font-size:11.5pt;
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
@@ -102,17 +102,52 @@ p{margin:0 0 10px 0;}
 .serif{font-family:'Cormorant Garamond', serif;}
 .sans{font-family:'Jost', sans-serif;}
 
+/* ===== SCREEN MODE (default): pages render as centered, shadowed cards ===== */
 .page{
-  width:8.5in;
+  width:100%;
+  max-width:8.5in;
   min-height:11in;
   position:relative;
   background:var(--cream);
   overflow:visible;
+  margin:0 auto 28px auto;
+  box-shadow:0 4px 28px rgba(23,59,42,.14);
+  border-radius:5px;
+}
+.page:last-child{margin-bottom:0;}
+.page-pad{padding:.65in .75in;min-height:9.55in;display:flex;flex-direction:column;justify-content:center;}
+
+@media (max-width:900px){
+  html:not(.print-mode) body{padding:20px 0;}
+  html:not(.print-mode) .page{max-width:96%;box-shadow:0 3px 18px rgba(23,59,42,.12);}
+}
+@media (max-width:700px){
+  html:not(.print-mode) .page{min-height:0;border-radius:3px;}
+  html:not(.print-mode) .page-pad{padding:.5in .35in;min-height:0;}
+  html:not(.print-mode) .archetype-wrap,html:not(.print-mode) .gg-grid,html:not(.print-mode) .voice-grid,html:not(.print-mode) .stem-grid,html:not(.print-mode) .cpp-grid,html:not(.print-mode) .bridge-grid{grid-template-columns:1fr !important;}
+  html:not(.print-mode) .cover,html:not(.print-mode) .closing-page{height:auto !important;min-height:70vh;padding:.5in .4in !important;}
+  html:not(.print-mode) .cover h1{font-size:38pt !important;}
+  html:not(.print-mode) .section-head h2{font-size:27pt !important;}
+}
+
+/* ===== PRINT MODE: restore exact 8.5x11in physical pages ===== */
+/* Class-based, set by the render pipeline via JS, never relies on CSS media-type detection alone */
+html.print-mode body{background:var(--cream);}
+html.print-mode .page{
+  width:8.5in;
+  max-width:none;
+  min-height:11in;
+  margin:0;
+  box-shadow:none;
+  border-radius:0;
   page-break-after:always;
   break-after:page;
 }
-.page:last-child{page-break-after:auto;}
-.page-pad{padding:.65in .75in;min-height:9.55in;display:flex;flex-direction:column;justify-content:center;}
+html.print-mode .page:last-child{page-break-after:auto;}
+@media print{
+  html.print-mode .page{ page-break-after:always; }
+  html.print-mode .page:last-child{ page-break-after:auto; }
+}
 
 .eyebrow{
   font-family:'Jost',sans-serif;
@@ -264,7 +299,11 @@ p{margin:0 0 10px 0;}
 
 @media print{
   @page{ size:8.5in 11in; margin:0; }
-  .page{ page-break-after:always; }
+}
+
+/* ===== Cross-document mobile safety net (archetype + companion covers) ===== */
+@media (max-width:700px){
+  html:not(.print-mode) .ap-cover,html:not(.print-mode) .cg-cover{height:auto !important;min-height:70vh;padding:.5in .4in !important;}
 }
 
 /* ===== COVER ===== */
